@@ -1,5 +1,5 @@
 import express from 'express';
-const app = express();
+import fs from 'fs';
 import cors from 'cors';
 import multer from 'multer';
 import data from './data.js';
@@ -7,12 +7,17 @@ import { getAll, getOne, create, update, remove } from './ProductControllers.js'
 
 export const urlApi = 'http://localhost:5000';
 
+const app = express();
+
 app.use(express.json());
 app.use(cors());
 app.use('/static', express.static('uploads'));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    if (!fs.existsSync('uploads')) {
+      fs.mkdirSync('uploads');
+    }
     cb(null, 'uploads');
   },
   filename: (req, file, cb) => {
